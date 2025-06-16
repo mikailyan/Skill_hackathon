@@ -1,43 +1,45 @@
-### Lottery API Tests
-
-# 1. Создать тираж
+### 1. Создать тираж
 POST http://127.0.0.1:8000/draws
 
-#Ответ:
-curl -X POST http://127.0.0.1:8000/draws
-{"draw_id":1,"status":"active"}
-
-# 2. Купить билет (правильный)
+### 2.1 Купить билет
 POST http://127.0.0.1:8000/tickets
 Content-Type: application/json
 
-#Ответ:
-curl -X POST http://127.0.0.1:8000/tickets -H "Content-Type: application/json" -d '{"draw_id":1,"numbers":[3,7,12,25,31]}'
-{"ticket_id":1}
+{
+  "draw_id": 1,
+  "numbers": [3,7,12,25,31]
+}
 
-curl -X POST http://127.0.0.1:8000/tickets   -H "Content-Type: application/json"   -d '{"draw_id":1,"numbers":[1,2,11,22,30]}'
-{"ticket_id":2}
-
-curl -X POST http://127.0.0.1:8000/tickets   -H "Content-Type: application/json"   -d '{"draw_id":1,"numbers":[4,6,12,17,22]}'
-{"ticket_id":3}
-
-# 3. Купить билет (неправильный — дубликаты)
+### 2.2 Купить ещё билет
 POST http://127.0.0.1:8000/tickets
 Content-Type: application/json
 
-{"draw_id":1,"numbers":[3,7,12,25,31]}
-{"ticket_id":1}}
+{
+  "draw_id": 1,
+  "numbers": [1,2,11,22,30]
+}
 
-# 4. Завершить тираж
+### 2.3 И ещё один
+POST http://127.0.0.1:8000/tickets
+Content-Type: application/json
+
+{
+  "draw_id": 1,
+  "numbers": [4,6,12,17,22]
+}
+
+
+### 3. Купить билет (неправильный — дубликаты)
+POST http://127.0.0.1:8000/tickets
+Content-Type: application/json
+
+{
+  "draw_id": 1,
+  "numbers": [3,7,12,25,31]
+}
+
+### 4. Завершить тираж
 POST http://127.0.0.1:8000/draws/1/close
 
-#Ответ:
-curl -X POST http://127.0.0.1:8000/draws/1/close 
-{"draw_id":1,"winning_numbers":[3,17,21,22,24]}}
-
-# 5. Получить результаты
+### 5. Получить результаты
 GET http://127.0.0.1:8000/draws/1/results
-
-#Ответ:
-curl http://127.0.0.1:8000/draws/1/results
-{"winning_numbers":[3,17,21,22,24],"tickets":[{"ticket_id":1,"numbers":[3,7,12,25,31]},{"ticket_id":2,"numbers":[1,2,11,22,30]},{"ticket_id":3,"numbers":[4,6,12,17,22]}]} 
